@@ -1,8 +1,5 @@
 import * as React from 'react';
-import { Header } from '../../../components/Header';
-import { Bookmark } from '../../../Icons/Bookmark';
 import { INoticiasProps } from './INoticiasProps';
-import { CaretRight } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import { sp } from '@pnp/sp'
 import '@pnp/sp/webs';
@@ -39,18 +36,11 @@ export default function Noticias(props: INoticiasProps): JSX.Element {
     } 
   }, [props.listID])
   return (
-        <div className='newsBox'>
-          <a href={props.titleUrl} className="titleNews" target="_self" rel="noopener noreferrer" data-interception="off">
-            <Header.Root>
-              <Header.Icon>
-                <Bookmark width={14} height={18} />
-              </Header.Icon>
-              <div style={{ marginLeft: '12px', marginRight: '16px' }}>{props.titleSection}</div>
-              <Header.Icon>
-                <CaretRight size={24} />
-              </Header.Icon>
-            </Header.Root>
-          </a>
+        <div className='newsBox'>    
+            <div className="header-news">           
+              <div>{props.titleSection}</div>     
+              <a href={props.titleUrl} className="titleNews more" target="_self" rel="noopener noreferrer" data-interception="off">Ver tudo </a>         
+            </div>        
           {data.map((item, index) => {
             return (
               item.linkNoticia ? <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.linkNoticia}>

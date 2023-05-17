@@ -6,6 +6,7 @@ import '@pnp/sp/lists';
 import '@pnp/sp/items';
 import Loading from 'react-loading';
 import { Plus } from 'phosphor-react';
+import './NoticiasPagina.css'
 
 interface newsData {
   Title: string;
@@ -63,6 +64,7 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
 
   return (
     <>
+    <a target="_blank" rel="noopener noreferrer" data-interception="off" className='btn-add-news' href={"https://suportvrconsult.sharepoint.com/sites/Dev/_layouts/15/listform.aspx?PageType=8&ListId=%7BE1C48BE5-A852-47A5-ACDF-FAD9B2946275%7D&RootFolder=%2Fsites%2FDev%2FLists%2FNoticias&Source=https%3A%2F%2Fsuportvrconsult.sharepoint.com%2Fsites%2FDev%2FLists%2FNoticias%2FAllItems.aspx&ContentTypeId=0x01006262C50830C2B64FB017D09DF157B900002191983192577E439E5D378F23339C00"}><Plus/> Adicionar</a>
       {loading ?
         <div className='last-access-loading-container'>
           <Loading type='spin' height='36px' width='36px' color='#1B7754' />
@@ -72,8 +74,7 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
           {news.map((item, index) => {
             if (index > count) { return }
             return (
-              <div key={index} className='paginaNoticiasContainer' style={{ border: '2px solid black', marginBottom: '15px'}}>
-                Postado no dia {new Date(item.data).getDate()} de {monthsArray[new Date(item.data).getMonth()]} de {new Date(item.data).getFullYear()}
+              <div key={index} className='paginaNoticiasContainer' style={{  marginBottom: '15px'}}>                   
                 <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.linkNoticia}>
                   <div className="cardNews">
                     <img className="cardNewsImg" src={item.imageUrl} />
@@ -83,6 +84,9 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
                       </div>
                       <div className='cardNewsDescription'>
                         {item.descricao}
+                      </div>
+                      <div className='cardNewsDate'>
+                      Postado {new Date(item.data).getDate()} de {monthsArray[new Date(item.data).getMonth()]} de {new Date(item.data).getFullYear()}
                       </div>
                     </div>
                   </div>

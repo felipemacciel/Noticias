@@ -1,0 +1,70 @@
+a.btn-add-news {
+    text-decoration: none;
+    color: #1c1c42;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 16px;
+}
+
+a.titleNews {
+    text-decoration: none;
+}
+
+.cardNews {
+    display: flex;
+    margin-top: 25px;
+}
+
+img.cardNewsImg {
+    width: 200px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.cardNewsTitle {
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.cardNewsDescription {
+    padding: 10px 0 20px 0;
+    color: black;
+    font-weight: 500;
+}
+
+.cardNewsDate {
+    color: gray;
+    margin-top: 23px;
+}
+button.calendar-load-more-btn {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    border-radius: 12px;
+    padding: 4px 10px;
+    gap: 5px;
+    background: white;
+    border: 1px solid #64666e;
+    color: #606060;
+    cursor: pointer;
+}
+
+
+
+
+.header-news {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+a.titleNews.more {
+    font-size: 14px;
+    color: grey;
+}
