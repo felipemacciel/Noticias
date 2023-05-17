@@ -30,7 +30,7 @@ export default function Noticias(props: INoticiasProps): JSX.Element {
         .then((data: newsData[]) => {
             setData(data) 
         })
-        .catch((er:any) => {
+        .catch((er) => {
           console.log(er)
         })
     } 
