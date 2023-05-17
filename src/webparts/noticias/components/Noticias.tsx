@@ -5,6 +5,7 @@ import { sp } from '@pnp/sp'
 import '@pnp/sp/webs';
 import '@pnp/sp/lists';
 import '@pnp/sp/items';
+import '../../noticiasPagina/components/NoticiasPagina.css'
 
 interface newsData {
   Title: string;
