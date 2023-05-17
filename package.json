@@ -7,7 +7,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "build": "gulp bundle",
+    "build": "gulp clean & gulp trust-dev-cert & gulp bundle --ship & gulp package-solution --ship & explorer .",
     "clean": "gulp clean",
     "test": "gulp test"
   },
