@@ -1,40 +1,48 @@
 import * as React from 'react';
 import { INoticiasProps } from './INoticiasProps';
-import { useEffect, useState } from 'react';
+import { useEffect} from 'react';
 import { sp } from '@pnp/sp'
 import '@pnp/sp/webs';
 import '@pnp/sp/lists';
 import '@pnp/sp/items';
+import Loading from 'react-loading';
 import '../../noticiasPagina/components/NoticiasPagina.css'
 
 interface newsData {
   Title: string;
-  descricao: string;
-  imageUrl: string;
+  CanvasContent1: string;
+  FirstPublishedDate: string;
+  FileLeafRef: string;
+  BannerImageUrl: {
+    Url: string;
+  };
   linkNoticia: string;
 }
 
 export default function Noticias(props: INoticiasProps): JSX.Element {
-  const [data, setData] = useState<newsData[]>([])
+  
+  const [news, setNews] = React.useState<newsData[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [count, setCount] = React.useState<number>(3);
    useEffect(() => {
-    if (props.listID) {
-      const webUrl = window.location.protocol + "//" + window.location.hostname + "/" + window.location.pathname.split('/')[1] + "/" + window.location.pathname.split('/')[2]
-      sp.setup({
-        sp: {
-          headers: {
-            Accept: "application/json;odata=verbose",
-          },
-          baseUrl: webUrl
+    sp.setup({
+      sp: {
+        headers: {
+          Accept: "application/json;odata=verbose",
         },
-      });
-      sp.web.lists.getById(props.listID).items.top(4).orderBy('Created', true)()
-        .then((data: newsData[]) => {
-            setData(data) 
-        })
-        .catch((er) => {
-          console.log(er)
-        })
-    } 
+        baseUrl: props.absoluteUrl
+      },
+    });
+    sp.web.lists.getByTitle('Páginas do site').items.select('*, FileLeafRef').top(2000).filter(`FirstPublishedDate ge datetime'${new Date(new Date().setMonth(-1)).toISOString()}' and FirstPublishedDate le datetime'${new Date().toISOString()}' and PromotedState eq 2`)()
+      .then((data: any[]) => {
+        console.log(data)
+        setNews(data)
+        setLoading(false);
+      })
+      .catch((er) => {
+        console.log(er);
+        setLoading(false);
+      })
   }, [props.listID])
   return (
         <div className='newsBox'>    
@@ -42,34 +50,33 @@ export default function Noticias(props: INoticiasProps): JSX.Element {
               <div>{props.titleSection}</div>     
               <a href={props.titleUrl} className="titleNews more" target="_self" rel="noopener noreferrer" data-interception="off">Ver tudo </a>         
             </div>        
-          {data.map((item, index) => {
+            {loading ?
+        <div className='last-access-loading-container'>
+          <Loading type='spin' height='36px' width='36px' color='#1B7754' />
+        </div>
+        :
+        <>
+          {news.map((item, index) => {
+            if (index > count) { return }
             return (
-              item.linkNoticia ? <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.linkNoticia}>
-                <div key={index} className="cardNews">
-                  <img className="cardNewsImg" src={item.imageUrl} />
-                  <div className='cardNewsContent'>
-                    <div className='cardNewsTitle'>
-                      {item.Title}
-                    </div>
-                    <div className='cardNewsDescription'>
-                      {item.descricao}
-                    </div>
-                  </div>
-                </div>
-              </a> :
-                <div key={index} className="cardNews">
-                  <img className="cardNewsImg" src={item.imageUrl} />
-                  <div className='cardNewsContent'>
-                    <div className='cardNewsTitle'>
-                      {item.Title}
-                    </div>
-                    <div className='cardNewsDescription'>
-                      {item.descricao}
+              <div key={index} className='paginaNoticiasContainer' style={{ marginBottom: '15px' }}>
+                <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.FileLeafRef}>
+                  <div className="cardNews">
+                    <img className="cardNewsImg" src={item.BannerImageUrl.Url} />
+                    <div className='cardNewsContent'>
+                      <div className='cardNewsTitle'>
+                        {item.Title}
+                      </div>
+                      <div className='cardNewsDescription' dangerouslySetInnerHTML={{__html: item.CanvasContent1}}/>              
+                      {setCount}        
                     </div>
                   </div>
-                </div>
+                </a>
+              </div>
             )
           })}
+        </>
+      }
         </div>
   )
 

@@ -16,13 +16,12 @@ export interface INoticiasPaginaWebPartProps {
 }
 
 export default class NoticiasPaginaWebPart extends BaseClientSideWebPart<INoticiasPaginaWebPartProps> {
-
-
   public render(): void {
     const element: React.ReactElement<INoticiasPaginaProps> = React.createElement(
       NoticiasPagina,
       {
         listID: this.properties.listID,
+        absoluteUrl: this.context.pageContext.site.absoluteUrl
       }
     );
 

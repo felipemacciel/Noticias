@@ -4,4 +4,5 @@ export interface INoticiasProps {
   context: any;
   titleUrl: string;
   titleSection: string;
+  absoluteUrl: string;
 }

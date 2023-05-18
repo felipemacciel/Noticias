@@ -29,7 +29,8 @@ export default class NoticiasWebPart extends BaseClientSideWebPart<INoticiasWebP
         listID: this.properties.listID,
         titleUrl: this.properties.titleUrl,
         context: this.context,
-        titleSection: this.properties.titleSection
+        titleSection: this.properties.titleSection,
+        absoluteUrl: this.context.pageContext.site.absoluteUrl
       }
     );
 

@@ -2,19 +2,21 @@ import * as React from 'react';
 import { INoticiasPaginaProps } from './INoticiasPaginaProps';
 import { sp } from '@pnp/sp';
 import '@pnp/sp/webs';
-import '@pnp/sp/lists';
+import '@pnp/sp/lists'
 import '@pnp/sp/items';
 import Loading from 'react-loading';
 import { Plus } from 'phosphor-react';
-import './NoticiasPagina.css'
+import './NoticiasPagina.css';
 
 interface newsData {
   Title: string;
-  descricao: string;
-  imageUrl: string;
-  linkNoticia: string;
   Id: number;
-  data: string;
+  FirstPublishedDate: string;
+  FileLeafRef: string;
+  BannerImageUrl: {
+    Url: string;
+  };
+  CanvasContent1: string;
 }
 
 export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element {
@@ -37,17 +39,17 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
   ];
 
   React.useEffect(() => {
-    const webUrl = window.location.protocol + "//" + window.location.hostname + "/" + window.location.pathname.split('/')[1] + "/" + window.location.pathname.split('/')[2]
     sp.setup({
       sp: {
         headers: {
           Accept: "application/json;odata=verbose",
         },
-        baseUrl: webUrl
+        baseUrl: props.absoluteUrl
       },
     });
-    sp.web.lists.getById(props.listID).items.top(2000).filter(`data ge datetime'${new Date(new Date().setDate(-30)).toISOString()}' and data le datetime'${new Date().toISOString()}'`).orderBy('data', false)()
-      .then((data: newsData[]) => {
+    sp.web.lists.getByTitle('Páginas do site').items.select('*, FileLeafRef').top(2000).filter(`FirstPublishedDate ge datetime'${new Date(new Date().setMonth(-1)).toISOString()}' and FirstPublishedDate le datetime'${new Date().toISOString()}' and PromotedState eq 2`)()
+      .then((data: any[]) => {
+        console.log(data)
         setNews(data)
         setLoading(false);
       })
@@ -61,10 +63,9 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
     setCount(prev => prev + 5)
   }
 
-
   return (
     <>
-    <a target="_blank" rel="noopener noreferrer" data-interception="off" className='btn-add-news' href={"https://suportvrconsult.sharepoint.com/sites/Dev/_layouts/15/listform.aspx?PageType=8&ListId=%7BE1C48BE5-A852-47A5-ACDF-FAD9B2946275%7D&RootFolder=%2Fsites%2FDev%2FLists%2FNoticias&Source=https%3A%2F%2Fsuportvrconsult.sharepoint.com%2Fsites%2FDev%2FLists%2FNoticias%2FAllItems.aspx&ContentTypeId=0x01006262C50830C2B64FB017D09DF157B900002191983192577E439E5D378F23339C00"}><Plus/> Adicionar</a>
+      <a  className='btn-add-news' href={"https://suportvrconsult.sharepoint.com/sites/Dev/_layouts/15/CreatePageFromTemplate.aspx?source=%2Fsites%2FDev&promotedState=1"}><Plus /> Adicionar</a>
       {loading ?
         <div className='last-access-loading-container'>
           <Loading type='spin' height='36px' width='36px' color='#1B7754' />
@@ -74,19 +75,17 @@ export default function NoticiasPagina(props: INoticiasPaginaProps): JSX.Element
           {news.map((item, index) => {
             if (index > count) { return }
             return (
-              <div key={index} className='paginaNoticiasContainer' style={{  marginBottom: '15px'}}>                   
-                <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.linkNoticia}>
+              <div key={index} className='paginaNoticiasContainer' style={{ marginBottom: '15px' }}>
+                <a target="_blank" rel="noopener noreferrer" data-interception="off" className='titleNews' href={item.FileLeafRef}>
                   <div className="cardNews">
-                    <img className="cardNewsImg" src={item.imageUrl} />
+                    <img className="cardNewsImg" src={item.BannerImageUrl.Url} />
                     <div className='cardNewsContent'>
                       <div className='cardNewsTitle'>
                         {item.Title}
                       </div>
-                      <div className='cardNewsDescription'>
-                        {item.descricao}
-                      </div>
+                      <div className='cardNewsDescription' dangerouslySetInnerHTML={{__html: item.CanvasContent1}}/>
                       <div className='cardNewsDate'>
-                      Postado {new Date(item.data).getDate()} de {monthsArray[new Date(item.data).getMonth()]} de {new Date(item.data).getFullYear()}
+                        Postado {new Date(item.FirstPublishedDate).getDate()} de {monthsArray[new Date(item.FirstPublishedDate).getMonth()]} de {new Date(item.FirstPublishedDate).getFullYear()}
                       </div>
                     </div>
                   </div>
